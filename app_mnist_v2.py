@@ -15,7 +15,8 @@ save_dir = os.path.join(file_path, 'model')
 
 # 학습된 모델 불러오기
 model_file = 'minist_model.h5'
-model = load_model(os.path.join(save_dir, model_file))
+#model = load_model(os.path.join(save_dir, model_file))
+model = load_model(model_file)
 
 # 헤더 출력
 st.subheader('손글씨 숫자 인식')
@@ -32,12 +33,15 @@ canvas_result = st_canvas(
     drawing_mode='freedraw',
     update_streamlit=False,
     key='canvas')
+#update_streamlit=False : 이벤트 발생시마다 streamlit을 refresh
 
 if canvas_result.image_data is not None:
     img = cv2.resize(canvas_result.image_data.astype('uint8'), (28, 28))
     rescaled = cv2.resize(img, (SIZE, SIZE), interpolation=cv2.INTER_NEAREST)
     st.write('모델 입력 형태')
     st.image(rescaled)
+# img를 28*28로 한 이유는 학습데이터로 사용하기 위함
+# rescaled한 이유 : 실제 데이터(img)를 확대하여 사용자에게 학습할 데이터를 자세히 보여주기 위함
 
 if st.button('Predict'):
     test_x = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
